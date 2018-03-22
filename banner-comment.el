@@ -37,7 +37,8 @@
 
 Called on an existing banner comment, will reformat it.
 
-Final column may be set by prefix arg END-COLUMN (default 80)."
+Final column may be set by prefix arg END-COLUMN (default
+`banner-comment-width`)."
   (interactive "P")
   (save-excursion
     (save-restriction
