@@ -5,7 +5,7 @@
 ;; Author: James Ferguson <james@faff.org>
 ;; URL: https://github.com/WJCFerguson/banner-comment
 ;; Package-Requires: ((emacs "24.4"))
-;; Version: 2.1
+;; Version: 2.2
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
