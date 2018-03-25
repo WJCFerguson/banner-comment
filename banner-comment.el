@@ -5,7 +5,7 @@
 ;; Author: James Ferguson <james@faff.org>
 ;; URL: https://github.com/WJCFerguson/banner-comment
 ;; Package-Requires: ((emacs "24.4"))
-;; Version: 2.2
+;; Version: 2.3
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
@@ -52,8 +52,7 @@
 
 Called on an existing banner comment, will reformat it.
 
-Final column may be set by prefix arg END-COLUMN (default
-`fill-column')."
+Final column will be (or END-COLUMN comment-fill-column fill-column)."
   (interactive "P")
   (save-excursion
     (save-restriction
@@ -70,7 +69,7 @@ Final column may be set by prefix arg END-COLUMN (default
           (let* ((central-text (if (string-empty-p (match-string 3))
                                    (make-string 2 banner-comment-char)
                                  (format " %s " (match-string 3))))
-                 (banner-char-width (- (or end-column fill-column)
+                 (banner-char-width (- (or end-column comment-fill-column fill-column)
                                        (length (match-string 1)) ;; initial ws
                                        (length comment-start)
                                        (length central-text) ;; actual text
