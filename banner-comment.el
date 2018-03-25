@@ -39,10 +39,6 @@
   "Character to be used for comment banners."
   :type 'character)
 
-(defcustom banner-comment-width 80
-  "Width for the standard banner."
-  :type 'integer)
-
 (defcustom banner-comment-char-match "[[:space:];#/*~=-]*"
   "Regexp to match old comment-banner prefix/suffix text to be destroyed."
   :type 'regexp)
@@ -57,7 +53,7 @@
 Called on an existing banner comment, will reformat it.
 
 Final column may be set by prefix arg END-COLUMN (default
-`banner-comment-width`)."
+`fill-column')."
   (interactive "P")
   (save-excursion
     (save-restriction
@@ -74,7 +70,7 @@ Final column may be set by prefix arg END-COLUMN (default
           (let* ((central-text (if (string-empty-p (match-string 3))
                                    (make-string 2 banner-comment-char)
                                  (format " %s " (match-string 3))))
-                 (banner-char-width (- (or end-column banner-comment-width)
+                 (banner-char-width (- (or end-column fill-column)
                                        (length (match-string 1)) ;; initial ws
                                        (length comment-start)
                                        (length central-text) ;; actual text
