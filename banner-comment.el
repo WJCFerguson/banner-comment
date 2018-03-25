@@ -5,7 +5,7 @@
 ;; Author: James Ferguson <james@faff.org>
 ;; URL: https://github.com/WJCFerguson/banner-comment
 ;; Package-Requires: ((emacs "24.4"))
-;; Version: 2.3
+;; Version: 2.4
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
@@ -43,8 +43,14 @@
   "Regexp to match old comment-banner prefix/suffix text to be destroyed."
   :type 'regexp)
 
-(require 'subr-x) ;; for string-trim
+(defcustom banner-comment-width nil
+  "Default final column for banner comment if not specified by prefix arg.
 
+If nil, use (or `comment-fill-column' `fill-column')."
+  :type '(choice (const :tag "(or comment-fill-column fill-column)" nil)
+                 integer))
+
+(require 'subr-x) ;; for string-trim
 
 ;;;###autoload
 (defun banner-comment (&optional end-column)
@@ -69,7 +75,10 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
           (let* ((central-text (if (string-empty-p (match-string 3))
                                    (make-string 2 banner-comment-char)
                                  (format " %s " (match-string 3))))
-                 (banner-char-width (- (or end-column comment-fill-column fill-column)
+                 (banner-char-width (- (or end-column
+                                           banner-comment-width
+                                           comment-fill-column
+                                           fill-column)
                                        (length (match-string 1)) ;; initial ws
                                        (length comment-start)
                                        (length central-text) ;; actual text
