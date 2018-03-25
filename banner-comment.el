@@ -1,10 +1,25 @@
-;;; banner-comment.el --- For producing banner comments
+;;; banner-comment.el --- For producing banner comments. -*- lexical-binding: t; -*-
+;;
+;; Copyright (C) 2018 James Ferguson
 ;;
 ;; Author: James Ferguson <james@faff.org>
-;; Version: 2.0
-;; Keywords: comment
-;;
+;; URL: https://github.com/WJCFerguson/banner-comment
+;; Package-Requires: ((emacs "24.4"))
+;; Version: 2.1
+;; Keywords: convenience
+
+;; This file is not part of GNU Emacs.
+
+;;; License:
+
+;; Licensed under the same terms as Emacs.
+
 ;;; Commentary:
+
+;; Quick start:
+;;
+;; Bind the following commands:
+;; banner-comment
 ;;
 ;; Code to format a line into a banner comment
 ;;
@@ -32,7 +47,7 @@
   "Regexp to match old comment-banner prefix/suffix text to be destroyed."
   :type 'regexp)
 
-(require 'subr-x) ;; for trim-string
+(require 'subr-x) ;; for string-trim
 
 
 ;;;###autoload
