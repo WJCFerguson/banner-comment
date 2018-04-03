@@ -66,26 +66,26 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
       (beginning-of-line)
       (if (re-search-forward
            (format
-            "^\\([[:space:]]*\\)\\(%s\\|\\)%s\\(.*?\\)%s\\(%s\\|%s\\|\\)$"
+            "^\\(?98:[[:space:]]*\\)\\(%s\\|\\)%s\\(?99:.*?\\)%s\\(%s\\|%s\\|\\)$"
             (or comment-start-skip (regexp-quote (string-trim comment-start)))
             banner-comment-char-match
             banner-comment-char-match
             (regexp-quote (string-trim comment-start))
             (or comment-end-skip (regexp-quote (string-trim comment-start)))))
-          (let* ((central-text (if (string-empty-p (match-string 3))
+          (let* ((central-text (if (string-empty-p (match-string 99))
                                    (make-string 2 banner-comment-char)
-                                 (format " %s " (match-string 3))))
+                                 (format " %s " (match-string 99))))
                  (banner-char-width (- (or end-column
                                            banner-comment-width
                                            comment-fill-column
                                            fill-column)
-                                       (length (match-string 1)) ;; initial ws
+                                       (length (match-string 98)) ;; initial ws
                                        (length comment-start)
                                        (length central-text) ;; actual text
                                        (length comment-end))))
             (replace-match
              (concat
-              (match-string 1) ;; initial ws
+              (match-string 98) ;; initial ws
               comment-start
               (make-string (+ (/ banner-char-width 2) (% banner-char-width 2)) ?=)
               central-text
