@@ -71,7 +71,7 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
             banner-comment-char-match
             banner-comment-char-match
             (regexp-quote (string-trim comment-start))
-            (regexp-quote (string-trim comment-end))))
+            (or comment-end-skip (regexp-quote (string-trim comment-start)))))
           (let* ((central-text (if (string-empty-p (match-string 3))
                                    (make-string 2 banner-comment-char)
                                  (format " %s " (match-string 3))))
