@@ -62,35 +62,37 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
   (interactive "P")
   (save-excursion
     (save-restriction
-      (narrow-to-region (line-beginning-position) (line-end-position))
       (beginning-of-line)
-      (if (re-search-forward
-           (format
-            "^\\(?98:[[:space:]]*\\)\\(%s\\|\\)%s\\(?99:.*?\\)%s\\(%s\\|%s\\|\\)$"
-            (or comment-start-skip (regexp-quote (string-trim comment-start)))
-            banner-comment-char-match
-            banner-comment-char-match
-            (regexp-quote (string-trim comment-start))
-            (or comment-end-skip (regexp-quote (string-trim comment-start)))))
-          (let* ((central-text (if (string-empty-p (match-string 99))
-                                   (make-string 2 banner-comment-char)
-                                 (format " %s " (match-string 99))))
-                 (banner-char-width (- (or end-column
-                                           banner-comment-width
-                                           comment-fill-column
-                                           fill-column)
-                                       (length (match-string 98)) ;; initial ws
+      (forward-to-indentation 0)
+      (let* ((banner-width (- (or end-column
+                                  banner-comment-width
+                                  comment-fill-column
+                                  fill-column)
+                              (current-column))))
+        (narrow-to-region (point) (line-end-position))
+        (if (re-search-forward
+             (format
+              "^\\(%s\\|\\)%s\\(?99:.*?\\)%s\\(%s\\|%s\\|\\)$"
+              (or comment-start-skip (regexp-quote (string-trim comment-start)))
+              banner-comment-char-match
+              banner-comment-char-match
+              (regexp-quote (string-trim comment-start))
+              (or comment-end-skip (regexp-quote (string-trim comment-start)))))
+            (let* ((central-text (if (string-empty-p (match-string 99))
+                                     (make-string 2 banner-comment-char)
+                                   (format " %s " (match-string 99))))
+                   (remaining-width (- banner-width
                                        (length comment-start)
                                        (length central-text) ;; actual text
                                        (length comment-end))))
-            (replace-match
-             (concat
-              (match-string 98) ;; initial ws
-              comment-start
-              (make-string (+ (/ banner-char-width 2) (% banner-char-width 2)) ?=)
-              central-text
-              (make-string (/ banner-char-width 2) ?=)
-              comment-end)))))))
+              (replace-match
+               (concat
+                (match-string 98) ;; initial ws
+                comment-start
+                (make-string (+ (/ remaining-width 2) (% remaining-width 2)) ?=)
+                central-text
+                (make-string (/ remaining-width 2) ?=)
+                comment-end))))))))
 
 
 (provide 'banner-comment)
