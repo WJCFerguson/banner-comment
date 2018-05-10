@@ -83,11 +83,10 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
                                    (format " %s " (match-string 99))))
                    (remaining-width (- banner-width
                                        (length comment-start)
-                                       (length central-text) ;; actual text
+                                       (length central-text)
                                        (length comment-end))))
               (replace-match
                (concat
-                (match-string 98) ;; initial ws
                 comment-start
                 (make-string (+ (/ remaining-width 2) (% remaining-width 2)) ?=)
                 central-text
