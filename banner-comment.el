@@ -85,6 +85,8 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
                                        (length comment-start)
                                        (length central-text)
                                        (length comment-end))))
+              (if (< remaining-width 0)
+                  (error "Text too wide for banner comment"))
               (replace-match
                (concat
                 comment-start
