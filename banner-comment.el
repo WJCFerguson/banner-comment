@@ -64,36 +64,42 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
     (save-restriction
       (beginning-of-line)
       (forward-to-indentation 0)
-      (let* ((banner-width (- (or end-column
-                                  banner-comment-width
-                                  comment-fill-column
-                                  fill-column)
-                              (current-column))))
+      (let ((banner-width (- (or end-column
+                                 banner-comment-width
+                                 comment-fill-column
+                                 fill-column)
+                             (current-column))))
         (narrow-to-region (point) (line-end-position))
+        ;; re search to extract existing into: pre(97), text(98), post(99)
         (if (re-search-forward
              (format
-              "^\\(%s\\|\\)%s\\(?99:.*?\\)%s\\(%s\\|%s\\|\\)$"
+              "\\(?97:^\\(%s\\|\\)%s\\)\\(?98:.*?\\)\\(?99:%s\\(%s\\|%s\\|\\)\\)$"
               (or comment-start-skip (regexp-quote (string-trim comment-start)))
               banner-comment-char-match
               banner-comment-char-match
               (regexp-quote (string-trim comment-start))
               (or comment-end-skip (regexp-quote (string-trim comment-start)))))
-            (let* ((central-text (if (string-empty-p (match-string 99))
-                                     (make-string 2 banner-comment-char)
-                                   (format " %s " (match-string 99))))
-                   (remaining-width (- banner-width
-                                       (length comment-start)
-                                       (length central-text)
-                                       (length comment-end))))
+            (let ((remaining-width (- banner-width
+                                      (length comment-start)
+                                      (if (string-empty-p (match-string 98))
+                                          (length (match-string 98))
+                                        (+ 2 (length (match-string 98))))
+                                      (length comment-end))))
               (if (< remaining-width 0)
                   (error "Text too wide for banner comment"))
-              (replace-match
+              (replace-match ;; replace everything before
                (concat
                 comment-start
-                (make-string (+ (/ remaining-width 2) (% remaining-width 2)) ?=)
-                central-text
-                (make-string (/ remaining-width 2) ?=)
-                comment-end))))))))
+                (make-string (+ (/ remaining-width 2) (% remaining-width 2))
+                             banner-comment-char)
+                (if (not (string-empty-p (match-string 98))) " "))
+               nil nil nil 97)
+              (replace-match ;; replace everything after
+               (concat
+                (if (not (string-empty-p (match-string 98))) " ")
+                (make-string (/ remaining-width 2) banner-comment-char)
+                comment-end)
+               nil nil nil 99)))))))
 
 
 (provide 'banner-comment)
