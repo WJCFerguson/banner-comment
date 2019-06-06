@@ -50,6 +50,16 @@ If nil, use (or `comment-fill-column' `fill-column')."
   :type '(choice (const :tag "(or comment-fill-column fill-column)" nil)
                  integer))
 
+(defcustom banner-comment-start nil
+  "String to override `comment-start' for the banner, if non-nil."
+  :type '(choice (const :tag "use `comment-start'" nil)
+                 string))
+
+(defcustom banner-comment-end nil
+  "String to override `comment-end' for the banner, if non-nil."
+  :type '(choice (const :tag "use `comment-end'" nil)
+                 string))
+
 (require 'subr-x) ;; for string-trim
 
 ;;;###autoload
@@ -68,7 +78,9 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
                                  banner-comment-width
                                  comment-fill-column
                                  fill-column)
-                             (current-column))))
+                             (current-column)))
+            (comment-start (or banner-comment-start comment-start))
+            (comment-end (or banner-comment-end comment-end)))
         (narrow-to-region (point) (line-end-position))
         ;; re search to extract existing into: pre(97), text(98), post(99)
         (if (re-search-forward
