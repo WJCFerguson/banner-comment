@@ -5,7 +5,7 @@
 ;; Author: James Ferguson <james@faff.org>
 ;; URL: https://github.com/WJCFerguson/banner-comment
 ;; Package-Requires: ((emacs "24.4"))
-;; Version: 2.8.0
+;; Version: 2.8.1
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
@@ -81,8 +81,10 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
                              (current-column)))
             (comment-start (or banner-comment-start comment-start))
             (comment-end (or banner-comment-end comment-end)))
+        ;; narrow to btw indentation column and end of line
         (narrow-to-region (point) (line-end-position))
-        ;; re search to extract existing text into subexp 98
+        ;; re search to extract existing text, ignoring existing comments &
+        ;; banners, into subexp 98
         (if (re-search-forward
              (format
               "\\(^\\(%s\\|\\)%s\\)\\(?98:.*?\\)\\(%s\\(%s\\|%s\\|\\)\\)$"
@@ -100,7 +102,7 @@ Final column will be (or END-COLUMN comment-fill-column fill-column)."
                                        (length comment-end))))
               (if (< remaining-width 0)
                   (error "Text too wide for banner comment"))
-              (replace-match ;; replace everything before
+              (replace-match ;; replace everything with prefix-text-suffix
                (concat
                 comment-start
                 (make-string (+ (/ remaining-width 2) (% remaining-width 2))
